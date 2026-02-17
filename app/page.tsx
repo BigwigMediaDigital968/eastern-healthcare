@@ -1,6 +1,7 @@
 import AboutStatsSection from "./components/homepage/AboutStatsSection";
 import BusinessPartners from "./components/homepage/BusinessPartners";
-import ClientTestimonials from "./components/homepage/Clients";
+import Clients from "./components/homepage/Clients";
+import ClientTestimonials from "./components/homepage/ClientTestimonials";
 import Hero from "./components/homepage/Hero";
 import LeadForm from "./components/homepage/LeadForm";
 import WhatWeDoSnapshots from "./components/homepage/WhatWeDoSnapshots";
@@ -14,6 +15,7 @@ export default function Home() {
       <AboutStatsSection />
       <BusinessPartners />
       <WhyChooseUs />
+      <Clients />
       <ClientTestimonials />
       <LeadForm />
     </>
