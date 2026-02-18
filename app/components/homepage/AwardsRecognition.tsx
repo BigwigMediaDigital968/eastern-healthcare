@@ -125,7 +125,7 @@ export default function RewardsRecognitionSection() {
           viewport={{ once: true }}
         >
           <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight">
-            Rewards & Recognition
+            Awards & Recognition
           </h2>
 
           <p className="mt-6 text-white/80 text-lg max-w-lg">
