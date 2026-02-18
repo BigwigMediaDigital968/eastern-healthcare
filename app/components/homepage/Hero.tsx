@@ -118,7 +118,6 @@ export default function Hero({ backgroundType = "video" }: HeroProps) {
         </div>
 
         {/* Bottom Info Strip */}
-        {/* Bottom Info Strip */}
         <div className="absolute bottom-5 left-0 w-full z-20">
           <div className="mx-auto max-w-7xl px-4">
             {/* DESKTOP GRID */}
@@ -219,7 +218,7 @@ export default function Hero({ backgroundType = "video" }: HeroProps) {
             institutions in more than 85 countries worldwide.
           </p>
 
-          <button className="inline-flex items-center justify-center px-8 py-3 text-white font-semibold bg-[#0e7490] hover:bg-transparent hover:border-2 hover:border-[#0e7490] hover:text-[#0e7490] cursor-pointer transition rounded-md">
+          <button className="inline-flex items-center justify-center px-8 py-3 font-semibold rounded-md border-2 border-transparent bg-[#0e7490] text-white transition-all duration-300 ease-in-out hover:bg-transparent hover:border-[#0e7490] hover:text-[#0e7490] hover:scale-105 active:scale-95 cursor-pointer">
             READ MORE
           </button>
         </div>

@@ -125,7 +125,7 @@ export default function WhyChooseUs() {
                   {/* Hover Button */}
                   <Link
                     href={item.link}
-                    className="mt-6 inline-block bg-orange-500 text-white px-5 py-2 rounded-md text-sm font-medium opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition duration-500"
+                    className="mt-6 inline-block bg-[#0e7490] text-white px-5 py-2 rounded-md text-sm font-medium opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition duration-500"
                   >
                     Read More
                   </Link>

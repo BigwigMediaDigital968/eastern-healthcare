@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
@@ -8,7 +8,7 @@ const testimonials = [
   {
     name: "Rahul Mehta",
     role: "Real Estate Investor",
-    image: "/assets/user.jpg",
+    image: "/assets/dummy-client.jpg",
     rating: 5,
     content:
       "Eastern Healthcare has consistently delivered quality and compliance beyond expectations. Their professionalism and reliability are unmatched.",
@@ -16,7 +16,7 @@ const testimonials = [
   {
     name: "Anita Sharma",
     role: "Pharma Distributor",
-    image: "/assets/user.jpg",
+    image: "/assets/dummy-client.jpg",
     rating: 5,
     content:
       "Working with their team has been seamless. Production timelines and regulatory processes are handled with exceptional precision.",
@@ -24,7 +24,7 @@ const testimonials = [
   {
     name: "Vikram Singh",
     role: "Healthcare Brand Owner",
-    image: "/assets/user.jpg",
+    image: "/assets/dummy-client.jpg",
     rating: 4,
     content:
       "Strong infrastructure and dependable delivery standards. A trusted long-term manufacturing partner.",
@@ -32,18 +32,25 @@ const testimonials = [
   {
     name: "Sneha Kapoor",
     role: "Global Export Partner",
-    image: "/assets/user.jpg",
+    image: "/assets/dummy-client.jpg",
     rating: 5,
     content:
       "Their scalability and quality assurance processes make international collaboration effortless.",
   },
 ];
 
+// Duplicate array for seamless loop
+const extendedTestimonials = [...testimonials, ...testimonials];
+
 export default function ClientTestimonials() {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Detect screen size
+  const total = testimonials.length;
+
+  // Responsive cards
   useEffect(() => {
     const updateCards = () => {
       if (window.innerWidth < 768) {
@@ -58,56 +65,84 @@ export default function ClientTestimonials() {
     return () => window.removeEventListener("resize", updateCards);
   }, []);
 
-  const total = testimonials.length;
+  // Detect section visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.4 },
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+  // Infinite autoplay only when visible
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const interval = setInterval(() => {
+      setIndex((prev) => prev + 1);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isVisible]);
+
+  // Reset index seamlessly
+  useEffect(() => {
+    if (index >= total) {
+      setTimeout(() => {
+        setIndex(0);
+      }, 700); // match transition duration
+    }
+  }, [index, total]);
 
   const nextSlide = () => {
-    setIndex((prev) => (prev + 1) % total);
+    setIndex((prev) => prev + 1);
   };
 
   const prevSlide = () => {
-    setIndex((prev) => (prev - 1 + total) % total);
+    setIndex((prev) => (prev === 0 ? total - 1 : prev - 1));
   };
 
-  // Auto Slide every 3 sec
-  useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [index, cardsPerView]);
-
   return (
-    <section className="py-24 bg-(--secondary) overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="py-24 bg-(--secondary) overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-6 text-center">
-        {/* Heading */}
         <h2 className="text-3xl md:text-4xl font-semibold text-(--primary)">
           What Our Clients Say
         </h2>
 
         <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-          Our commitment to quality, regulatory excellence, and scalable
-          healthcare manufacturing is reflected in the trust our partners place
-          in us.
+          Our commitment to quality and regulatory excellence is reflected in
+          the trust our partners place in us.
         </p>
 
-        {/* Slider Wrapper */}
-        <div className="relative mt-16 overflow-hidden">
+        <div className="relative mt-16 overflow-hidden py-3">
           <div
             className="flex transition-transform duration-700 ease-in-out"
             style={{
               transform: `translateX(-${index * (100 / cardsPerView)}%)`,
             }}
           >
-            {testimonials.map((item, i) => (
+            {extendedTestimonials.map((item, i) => (
               <div
                 key={i}
                 className={`px-4 ${
                   cardsPerView === 1 ? "w-full" : "w-1/3"
                 } shrink-0 flex`}
               >
-                {/* Card */}
-                <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300 flex flex-col w-full mb-2">
-                  {/* Profile */}
+                <div className="bg-white rounded-2xl shadow-md p-8 text-center flex flex-col w-full">
                   <div className="flex justify-center">
                     <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-(--primary)">
                       <Image
@@ -120,19 +155,16 @@ export default function ClientTestimonials() {
                     </div>
                   </div>
 
-                  {/* Rating */}
                   <div className="flex justify-center mt-4 text-(--accent)">
                     {Array.from({ length: item.rating }).map((_, i) => (
                       <span key={i}>★</span>
                     ))}
                   </div>
 
-                  {/* Content (flex-grow makes equal height) */}
-                  <p className="mt-4 text-gray-600 leading-relaxed grow">
+                  <p className="mt-4 text-gray-600 leading-relaxed grow text-sm">
                     {item.content}
                   </p>
 
-                  {/* Name */}
                   <div className="mt-6">
                     <h4 className="font-semibold text-(--primary)">
                       {item.name}
@@ -145,18 +177,17 @@ export default function ClientTestimonials() {
           </div>
         </div>
 
-        {/* Controls Below Center */}
         <div className="flex justify-center gap-6 mt-12">
           <button
             onClick={prevSlide}
-            className="w-12 h-12 rounded-full bg-white shadow-md flex items-center cursor-pointer justify-center text-(--primary) hover:bg-(--primary) hover:text-white transition"
+            className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-(--primary) hover:bg-(--primary) hover:text-white transition cursor-pointer"
           >
             <ChevronLeft size={20} />
           </button>
 
           <button
             onClick={nextSlide}
-            className="w-12 h-12 rounded-full bg-white shadow-md flex items-center cursor-pointer justify-center text-(--primary) hover:bg-(--primary) hover:text-white transition"
+            className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-(--primary) hover:bg-(--primary) hover:text-white transition cursor-pointer"
           >
             <ChevronRight size={20} />
           </button>
